@@ -1109,7 +1109,7 @@ mainTab:CreateButton({
 mainTab:CreateDivider()
 magSlider = mainTab:CreateSlider({
     Name = "Gift Collection Range",
-    Range = {1, 30},
+    Range = {1, 100000},
     Increment = 1,
     CurrentValue = 1,
     Callback = function(v)
@@ -2572,7 +2572,7 @@ plrTab:CreateToggle({
 })
 plrTab:CreateSlider({
     Name = "WalkSpeed",
-    Range = {1, 1e25},
+    Range = {1, 100000},
     Increment = 1,
     CurrentValue = ws,
     Callback = function(Value)
