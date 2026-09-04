@@ -2572,18 +2572,21 @@ plrTab:CreateToggle({
 })
 plrTab:CreateSlider({
     Name = "WalkSpeed",
-    Range = {5, 200},
+    Range = {1, 1e25},
     Increment = 1,
     CurrentValue = ws,
     Callback = function(Value)
         ws = Value
         local h = getHuman(getChar(plr))
-        if h then h.WalkSpeed = ws end
+        if h then
+            h.WalkSpeed = ws
+        end
     end
 })
+			
 plrTab:CreateSlider({
     Name = "JumpPower",
-    Range = {25, 100},
+    Range = {10, 1e25},
     Increment = 1,
     CurrentValue = jp,
     Callback = function(Value)
