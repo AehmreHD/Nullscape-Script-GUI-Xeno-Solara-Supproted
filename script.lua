@@ -1,6 +1,6 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 
-----------------------some IY funcs (just clipboard ig)
+---------------------- Some IY functions (clipboard helpers)
 function missing(t, f, fallback)
 	if type(f) == t then return f end
 	return fallback
@@ -974,7 +974,7 @@ local function isdirectionsafetopushfromguardianbullet(pos, direction)
     return result ~= nil and result.Instance and result.Instance.CanCollide == true
 end
 
----------------------collection
+--------------------- Collection
 local function collect(which)
     local activeTripmines = getActiveTripmines()
     if magSlider then
@@ -1079,7 +1079,7 @@ local function collect(which)
     end
 end
 
----------button
+--------- Buttons
 mainTab:CreateSection("Gifts")
 mainTab:CreateParagraph({
     Title = "NOTE",
@@ -1109,7 +1109,7 @@ mainTab:CreateButton({
 mainTab:CreateDivider()
 magSlider = mainTab:CreateSlider({
     Name = "Gift Collection Range",
-    Range = {1, 100000},
+    Range = {1, 30},
     Increment = 1,
     CurrentValue = 1,
     Callback = function(v)
@@ -1596,7 +1596,7 @@ local function handleEnemy(enemy)
     local waitingTime = 25
 
     if name == "ICBM" or name == "Telefragger" or name:find("Baby") then
-        waitingTime = 75 --lowered to 75
+        waitingTime = 75 -- Lowered to 75
     end
 
     if auto_destroy[name] then
@@ -2154,7 +2154,7 @@ enemyTab:CreateToggle({
     end
 })
 
---------------map
+-------------- Map
 
 mapTab:CreateSection("Void")
 local antiVoidSelection = 1
@@ -2546,7 +2546,7 @@ mapTab:CreateButton({
     end
 })
 
----------------player
+--------------- Player
 plrTab:CreateSection("Humanoid")
 local ew = false
 local ej = false
@@ -2570,26 +2570,35 @@ plrTab:CreateToggle({
         if h then h.JumpPower = jp end
     end
 })
-plrTab:CreateSlider({
+plrTab:CreateInput({
     Name = "WalkSpeed",
-    Range = {1, 100000},
-    Increment = 1,
-    CurrentValue = ws,
-    Callback = function(Value)
+    CurrentValue = tostring(ws),
+    PlaceholderText = "Enter WalkSpeed...",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(Text)
+        local Value = tonumber(Text)
+        if not Value then
+            notif("Enter a valid number for WalkSpeed.", "Invalid WalkSpeed")
+            return
+        end
+
         ws = Value
         local h = getHuman(getChar(plr))
-        if h then
-            h.WalkSpeed = ws
-        end
+        if h then h.WalkSpeed = ws end
     end
 })
-			
-plrTab:CreateSlider({
+plrTab:CreateInput({
     Name = "JumpPower",
-    Range = {10, 1e25},
-    Increment = 1,
-    CurrentValue = jp,
-    Callback = function(Value)
+    CurrentValue = tostring(jp),
+    PlaceholderText = "Enter JumpPower...",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(Text)
+        local Value = tonumber(Text)
+        if not Value then
+            notif("Enter a valid number for JumpPower.", "Invalid JumpPower")
+            return
+        end
+
         jp = Value
         local h = getHuman(getChar(plr))
         if h then h.JumpPower = jp end
@@ -2618,7 +2627,7 @@ local drb = plrTab:CreateToggle({
     end
 })
 
----------------visual
+--------------- Visual
 
 --[[visualTab:CreateSection("Better ESP Upgrades")
 visualTab:CreateButton({
@@ -2688,7 +2697,7 @@ local tvelov = visualTab:CreateToggle({
     end
 })
 
-----------------key
+---------------- Keybinds
 keyTab:CreateKeybind({
     Name = "Collect Normal Gifts",
     CurrentKeybind = "Nine",
@@ -2751,7 +2760,7 @@ keyTab:CreateKeybind({
         local humanoid = char and getHuman(char)
 
         if char and humanoid and not isDead(plr) then
-            humanoid:ChangeState(Enum.HumanoidStateType.Landed) --im so dumb this worked the whole time
+            humanoid:ChangeState(Enum.HumanoidStateType.Landed) -- This state change resets the ability correctly
         end
     end
 })
@@ -2989,7 +2998,7 @@ keyTab:CreateToggle({
 --     end
 -- })
 
---==--==--==--==--==--==--==--==--== MUSIC~~~
+--==--==--==--==--==--==--==--==--== Music
 local musicFolder = game:GetService("SoundService").MusicFolder
 local currentCustom
 local customPlaying = false
@@ -3055,7 +3064,7 @@ for _, sof in musicFolder:GetChildren() do
     end
 end
 
---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-- debug
+--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-- Debug
 debugTab:CreateButton({
     Name = "Copy Lobby Code",
     Callback = function()
@@ -3108,7 +3117,7 @@ debugTab:CreateButton({
     end
 })
 
----------connections!
+--------- Connections
 
 for _, enemy in ipairs(enemies:GetChildren()) do
     task.spawn(handleEnemy, enemy, 5)
@@ -3153,7 +3162,7 @@ table.insert(connections, music.Changed:Connect(function()
     end
 end))
 
-----loops!
+---- Loops
 --local loopClosest
 --local giftSelection = {}
 
@@ -3229,7 +3238,7 @@ local runLoop = RunService.Heartbeat:Connect(function()
     end
 
     if root and hitbox then
-        hitbox.Position = root.Position --teleporting hitbox and root together sometimes doesnt worK
+        hitbox.Position = root.Position -- Keeping the hitbox aligned with the root because moving both at once can fail
 
         if velov then
             local velocity = root.AssemblyLinearVelocity * Vector3.new(1,0.5,1)
@@ -3597,13 +3606,13 @@ RunService:BindToRenderStep("Hazard", Enum.RenderPriority.Last.Value + 2, functi
 
                 if dist < radius and isdirectionsafetopushfromguardianbullet(root.Position, pushDir) then
                     root.CFrame += pushDir * 3
-                elseif dist < radius then --do perpendicular
+                elseif dist < radius then -- Try a perpendicular direction
                     local altDir = Vector3.new(-pushDir.Z, 0, pushDir.X)
 
                     if isdirectionsafetopushfromguardianbullet(root.Position, altDir) then
                         root.CFrame += altDir * 3
                     else
-                        root.Position = p.Position + Vector3.new(0, 10, 0) --fuck it
+                        root.Position = p.Position + Vector3.new(0, 10, 0) -- Final fallback: move above the bullet protection area
                     end
                 end
             end
@@ -3611,7 +3620,7 @@ RunService:BindToRenderStep("Hazard", Enum.RenderPriority.Last.Value + 2, functi
     end
 end)
 
----- destroy
+---- Destroy
 function destroyGui()
     if destroying then return end
 
@@ -3721,7 +3730,7 @@ function destroyGui()
     print("fully destroyed null gui stuff")
     print("now destroying rayfield...")
     task.wait(.2)
-    gliderBoost = false --just in case
+    gliderBoost = false -- Safety fallback
     Rayfield:Destroy()
 end
 
